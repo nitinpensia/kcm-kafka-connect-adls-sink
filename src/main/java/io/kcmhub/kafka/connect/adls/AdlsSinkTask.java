@@ -1,7 +1,7 @@
 package io.kcmhub.kafka.connect.adls;
 
 import com.azure.storage.file.datalake.DataLakeFileClient;
-import com.azure.storage.file.datalake.DataLakePathClientBuilder;
+import io.kcmhub.kafka.connect.adls.dto.PartitionBuffer;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.connect.data.Field;
 import org.apache.kafka.connect.data.Schema;
@@ -30,38 +30,18 @@ public class AdlsSinkTask extends SinkTask {
     private String sasToken;
     private int flushMaxRecords;
     private boolean compressGzip;
+    private AdlsClientFactory clientFactory = new DefaultAdlsClientFactory();
+
+    // For test purposes
+    void setClientFactory(AdlsClientFactory factory) {
+        this.clientFactory = factory;
+    }
+
+    private DataLakeFileClient buildFileClient(String filePath) {
+        return clientFactory.createFileClient(accountName, filesystem, sasToken, filePath);
+    }
 
     // Buffer par topic-partition
-    private static class PartitionBuffer {
-        final String topic;
-        final int partition;
-        long startOffset = -1L;
-        final StringBuilder buffer = new StringBuilder();
-        int recordCount = 0;
-
-        PartitionBuffer(String topic, int partition) {
-            this.topic = topic;
-            this.partition = partition;
-        }
-
-        void append(long offset, String line) {
-            if (recordCount == 0) {
-                startOffset = offset;
-            }
-            buffer.append(line).append("\n");
-            recordCount++;
-        }
-
-        boolean isEmpty() {
-            return recordCount == 0;
-        }
-
-        void clear() {
-            buffer.setLength(0);
-            recordCount = 0;
-            startOffset = -1L;
-        }
-    }
 
     private final Map<TopicPartition, PartitionBuffer> buffers = new HashMap<>();
 
@@ -94,7 +74,7 @@ public class AdlsSinkTask extends SinkTask {
     //   FORMATTER AVRO / STRUCT / MAP / PRIMITIVES
     // ----------------------------------------------------------------------
 
-    private String formatRecordValue(SinkRecord record) {
+    String formatRecordValue(SinkRecord record) {
         Schema schema = record.valueSchema();
         Object value = record.value();
 
@@ -170,17 +150,6 @@ public class AdlsSinkTask extends SinkTask {
     //   ADLS UTIL
     // ----------------------------------------------------------------------
 
-    private DataLakeFileClient buildFileClient(String filePath) {
-        String endpoint = String.format("https://%s.dfs.core.windows.net", accountName);
-
-        return new DataLakePathClientBuilder()
-                .endpoint(endpoint)
-                .fileSystemName(filesystem)
-                .pathName(filePath)
-                .sasToken(sasToken)
-                .buildFileClient();
-    }
-
     private byte[] gzip(byte[] data) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -193,7 +162,7 @@ public class AdlsSinkTask extends SinkTask {
         }
     }
 
-    private void flushPartitionBuffer(PartitionBuffer buf) {
+    protected void flushPartitionBuffer(PartitionBuffer buf) {
         if (buf.isEmpty()) return;
 
         String date = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
@@ -203,22 +172,22 @@ public class AdlsSinkTask extends SinkTask {
         // nom de fichier basé sur topic / partition / start-offset
         String fileName = String.format(
                 "%s-p%d-o%d%s",
-                buf.topic,
-                buf.partition,
-                buf.startOffset,
+                buf.getTopic(),
+                buf.getPartition(),
+                buf.getStartOffset(),
                 extension
         );
 
         String filePath = String.format("%s/date=%s/%s", basePath, date, fileName);
 
-        String content = buf.buffer.toString();
+        String content = buf.getBuffer().toString();
         byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
         if (compressGzip) {
             bytes = gzip(bytes);
         }
 
         log.info("Writing {} records ({} bytes) to ADLS file {}",
-                buf.recordCount, bytes.length, filePath);
+                buf.getRecordCount(), bytes.length, filePath);
 
         DataLakeFileClient client = buildFileClient(filePath);
         client.create(true);
@@ -252,7 +221,7 @@ public class AdlsSinkTask extends SinkTask {
             String formatted = formatRecordValue(record);
             buf.append(offset, formatted);
 
-            if (buf.recordCount >= flushMaxRecords) {
+            if (buf.getRecordCount() >= flushMaxRecords) {
                 flushPartitionBuffer(buf);
             }
         }
